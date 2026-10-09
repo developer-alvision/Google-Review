@@ -43,7 +43,11 @@ export async function POST(req: Request) {
     const sanitizedFeedback = rawFeedback.slice(0, 2000);
 
     // Check for configured AI keys
-    const geminiKey = process.env.GEMINI_API_KEY || process.env.AI_API_KEY;
+    const geminiKey =
+      process.env.GEMINI_API_KEY ||
+      process.env.GOOGLE_API_KEY ||
+      process.env.GOOGLE_AI_API_KEY ||
+      process.env.AI_API_KEY;
     const openaiKey = process.env.OPENAI_API_KEY;
     const groqKey = process.env.GROQ_API_KEY;
 

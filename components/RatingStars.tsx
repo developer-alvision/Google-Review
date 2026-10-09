@@ -59,7 +59,7 @@ export function RatingStars({ rating, onChange, error }: RatingStarsProps) {
               role="radio"
               aria-checked={rating === starValue}
               aria-label={`${starValue} out of 5 stars`}
-              tabIndex={0}
+              tabIndex={rating === starValue || (rating === 0 && starValue === 1) ? 0 : -1}
               onClick={() => onChange(starValue)}
               onMouseEnter={() => setHoverRating(starValue)}
               onMouseLeave={() => setHoverRating(null)}

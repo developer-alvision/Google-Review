@@ -37,13 +37,13 @@ export function trackEvent(
     }
 
     // 2. Google Analytics (gtag.js) compatibility if present on window
-    if (typeof window !== "undefined" && typeof (window as unknown as { gtag?: Function }).gtag === "function") {
-      (window as unknown as { gtag: Function }).gtag("event", event, payload);
+    if (typeof window !== "undefined" && typeof (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag === "function") {
+      (window as unknown as { gtag: (...args: unknown[]) => void }).gtag("event", event, payload);
     }
 
     // 3. PostHog compatibility if present on window
-    if (typeof window !== "undefined" && (window as unknown as { posthog?: { capture: Function } }).posthog) {
-      (window as unknown as { posthog: { capture: Function } }).posthog.capture(event, payload);
+    if (typeof window !== "undefined" && (window as unknown as { posthog?: { capture: (...args: unknown[]) => void } }).posthog) {
+      (window as unknown as { posthog: { capture: (...args: unknown[]) => void } }).posthog.capture(event, payload);
     }
 
     // 4. Custom dispatch event for external listeners

@@ -52,6 +52,20 @@ export function GoogleReviewButton({
   };
 
   const handleCopyAndOpenGoogle = async () => {
+    // Determine destination URL
+    const destination = GOOGLE_REVIEW_URL.trim();
+    const finalUrl =
+      destination === "PASTE_GOOGLE_REVIEW_URL_HERE" || !destination
+        ? "https://www.google.com/search?q=Jyothsna+Maternity+%26+General+Hospital+reviews"
+        : destination;
+
+    // Open target window immediately within user click gesture to avoid mobile popup blockers
+    let popupWindow: Window | null = null;
+    if (typeof window !== "undefined") {
+      popupWindow = window.open(finalUrl, "_blank", "noopener,noreferrer");
+    }
+
+    // Copy to clipboard
     const success = await copyToClipboard(feedbackText);
 
     if (success) {
@@ -67,19 +81,12 @@ export function GoogleReviewButton({
 
     trackEvent("google_opened", { rating });
 
-    // Open Google Review in new tab
-    if (typeof window !== "undefined") {
-      const destination = GOOGLE_REVIEW_URL.trim();
-      // If placeholder is still set, open a graceful google search for the hospital or the URL
-      const finalUrl =
-        destination === "PASTE_GOOGLE_REVIEW_URL_HERE" || !destination
-          ? "https://www.google.com/search?q=Jyothsna+Maternity+%26+General+Hospital+reviews"
-          : destination;
-
-      window.open(finalUrl, "_blank", "noopener,noreferrer");
+    // Fallback if popup was blocked by browser
+    if (!popupWindow && typeof window !== "undefined") {
+      window.location.href = finalUrl;
     }
 
-    // Transition to success/confirmation screen after a brief delay so user sees feedback was copied
+    // Transition to success/confirmation screen after a brief delay
     setTimeout(() => {
       onProceedToSuccess();
     }, 1200);
